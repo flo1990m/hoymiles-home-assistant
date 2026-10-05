@@ -279,7 +279,23 @@ class HoymilesHomeCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     raise
                 except HoymilesConnectionError as err:
                     _LOGGER.debug("Could not update station totals: %s", err)
-                else:
+
+                try:
+                    self.inverter_indicators = (
+                        await self.client.async_inverter_indicators(self.station_id)
+                    )
+                    _LOGGER.warning(
+                        "HOYMILES INVERTER INDICATORS: %s",
+                        self.inverter_indicators,
+                    )
+                except HoymilesAuthError:
+                    raise
+                except HoymilesConnectionError as err:
+                    _LOGGER.warning(
+                        "Could not update inverter indicators: %s",
+                        err,
+                    )
+                finally:
                     self._station_updated = now
 
             if now - self._battery_settings_updated >= BATTERY_SETTINGS_INTERVAL:
@@ -326,6 +342,7 @@ class HoymilesHomeCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 "device_tree": self.device_tree,
                 "inverters": self.inverters,
                 "modules": self.modules,
+                "inverter_indicators": self.inverter_indicators,
                 "battery_energy": battery_energy,
                 "battery_settings": self.battery_settings,
             }
