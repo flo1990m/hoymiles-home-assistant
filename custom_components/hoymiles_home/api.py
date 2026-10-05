@@ -152,24 +152,17 @@ class HoymilesHomeClient:
         return self._unwrap(response) or {}
 
     async def async_inverter_indicators(self, station_id: int) -> dict[str, Any]:
-        """Return inverter realtime indicators."""
+        """Return raw inverter realtime indicators (Hoymiles indicator type 6)."""
         await self.async_ensure_login()
-
         response = await self._json(
             f"{DATA_BASE_URL}/pvmc/api/0/station_data/select_real_indicators_data",
-            {
-                "sid": station_id,
-                "type": 6,
-            },
+            {"sid": station_id, "type": 6},
         )
-
         data = self._unwrap(response)
-
         if isinstance(data, dict):
             return data
-
         return {"raw": data}
-    
+
     async def _get_live_uri(self, station_id: int) -> str:
         response = await self._json(
             f"{DATA_BASE_URL}/pvmc/api/0/station/get_sd_uri_c", {"sid": station_id}
