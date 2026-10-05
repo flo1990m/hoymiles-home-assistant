@@ -56,6 +56,7 @@ class HoymilesHomeCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self.inverters: list[dict[str, Any]] = []
         self.modules: dict[int, dict[int, dict[str, float | None]]] = {}
         self.station: dict[str, Any] = {}
+        self.inverter_indicators: dict[str, Any] = {}
         self.battery_settings: dict[str, Any] = {
             "readable": False,
             "error": "not_yet_read",
